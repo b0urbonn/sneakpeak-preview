@@ -1,22 +1,31 @@
 // Initializing Sneak Peak Environment...
 
-// Set the hidden access token
-// The user needs to view the Application/Storage tab to see this.
-const _0x452a = "Y2ljc2N0ZntoaWRkZW5faW5fcGxhaW5fc2lnaHRfcHJldmlld30="; // Base64 Encoded Flag
-
-document.cookie = "sneak_peak_preview=" + atob(_0x452a) + "; path=/; secure; samesite=strict";
+(function () {
+    // We set the cookie here with the plain text flag because that IS the challenge.
+    // The user is supposed to find this cookie.
+    const _t = "cicsctf{hidden_in_plain_sight_preview}";
+    document.cookie = "sneak_peak_preview=" + _t + "; path=/; secure; samesite=strict";
+})();
 
 console.log("Environment loaded. Authorization required to view content.");
 
-function checkFlag() {
-    const input = document.getElementById('flagInput');
+async function checkFlag() {
+    const input = document.getElementById('flagInput').value;
     const result = document.getElementById('result');
 
-    // Validate against the decoded value
-    if (input.value === atob(_0x452a)) {
+    // ONE-WAY HASH VALIDATION
+    // The flag is NOT stored in this code in a reversible format.
+    // We only store the SHA-256 hash of the valid flag.
+    const validHash = "b598f561e27c3184022f23c6827a4fddb77685e682ba14176eff938191cca5740";
+
+    const msgBuffer = new TextEncoder().encode(input);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+    if (hashHex === validHash) {
         result.textContent = "CONGRATULATIONS! ACCESS GRANTED. Welcome to the team.";
         result.className = "result success";
-        // Optional: Reveal something or animate
     } else {
         result.textContent = "ACCESS DENIED. Invalid token.";
         result.className = "result failure";
