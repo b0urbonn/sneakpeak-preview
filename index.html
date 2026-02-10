@@ -15,6 +15,13 @@
         <p>Access restricted to authorized testers only.</p>
         <div class="lock-icon">🔒</div>
         <p class="status">Checking preview permissions...</p>
+
+        <div class="input-area">
+            <p>Found the token? Enter it below:</p>
+            <input type="text" id="flagInput" placeholder="cicsctf{...}">
+            <button onclick="checkFlag()">Access Preview</button>
+        </div>
+        <div id="result" class="result"></div>
     </div>
     <script src="script.js"></script>
 </body>
